@@ -74,8 +74,8 @@ std::vector<BYTE> readFile(std::string filename) {
 
 void PrintUsage() {
 	printf("\nModes:\n==========================\n");
-	printf("--extract - Extract strings\n");
-	printf("--replace - Replace strings\n\n");
+	printf("-e | --extract - Extract strings\n");
+	printf("-r | --replace - Replace strings\n\n");
 
 	printf("\nOptional flags:\n==========================\n");
 	printf("'t' - Dumps text strings to console while processing\n\n");
