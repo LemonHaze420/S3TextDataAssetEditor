@@ -11,7 +11,8 @@
     Contributors:               LemonHaze
 
     Changelog: 
-		* v1.1 - 29/02/20 - Fixed issues with CSV routine parsing strings incorrectly
+		* v1.1 - 29/02/20 - Fixed issue when replacing strings with multiple occurrences
+						  - Fixed issues with CSV routine parsing strings incorrectly
 						  - Fixed '.modded' file extensions
 						  - Updated PrintUsage()
 							
@@ -172,7 +173,7 @@ int main(int argc, char ** argp)
 								
 
 								std::vector<BYTE>::iterator it = std::search(buffer.begin(), buffer.end(), replacement.search.begin(), replacement.search.end());
-								if (it != buffer.end()) {
+								while (it != buffer.end()) {
 									auto sizepos = buffer.erase(it - 4);
 									sizepos = buffer.insert(sizepos, replacement.replace.size()+1);
 
@@ -184,8 +185,8 @@ int main(int argc, char ** argp)
 									modifications++;
 									if (modifications % 2)
 										buffer.shrink_to_fit();
-								} else {
-									continue;
+
+									it = std::search(buffer.begin(), buffer.end(), replacement.search.begin(), replacement.search.end());
 								}
 							}
 						}
