@@ -6,15 +6,19 @@
 
 	Example usage:
 		S3TextDataAssetEditor --extract <path to directory to extract> <output dir>
-		S3TextDataAssetEditor --replace <original path> <output path>
+		S3TextDataAssetEditor --replace <original path> <output path> <CSV path>
 
     Contributors:               LemonHaze
 
     Changelog: 
+		* v1.1 - 29/02/20 - Fixed issues with CSV routine parsing strings incorrectly
+						  - Fixed '.modded' file extensions
+						  - Updated PrintUsage()
+							
         * v1.0 - 28/02/20 - Initial Version.
 */
 #define APP_TITLE	"S3TextDataAssetEditor"
-#define APP_VER		"v1.0"
+#define APP_VER		"v1.1"
 #define APP_STR		APP_TITLE " " APP_VER
 
 #include <Windows.h>
@@ -75,7 +79,9 @@ std::vector<BYTE> readFile(std::string filename) {
 void PrintUsage() {
 	printf("\nModes:\n==========================\n");
 	printf("-e | --extract - Extract strings\n");
-	printf("-r | --replace - Replace strings\n\n");
+	printf("\t --extract <path to files> <output directory>\n");
+	printf("-r | --replace - Replace strings\n");
+	printf("\t --replace <path to files> <output directory> <path to replacement CSV>\n\n");
 
 	printf("\nOptional flags:\n==========================\n");
 	printf("'t' - Dumps text strings to console while processing\n\n");
