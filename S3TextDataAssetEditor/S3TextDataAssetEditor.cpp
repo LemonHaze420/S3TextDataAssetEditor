@@ -127,23 +127,27 @@ int main(int argc, char ** argp)
 				while (!file.eof()) {
 					std::getline(file, line);
 					std::stringstream ssline(line);
+
+					std::string toFind, toReplace;
+					ssline >> std::quoted(toFind);
 					std::getline(ssline, field, ',');
+					ssline >> std::quoted(toReplace);
 					std::getline(ssline, replacement);
-					std::string tempSearch = field, tempReplace = replacement;
-					tempSearch = tempSearch.substr(1, tempSearch.size() - 2), tempReplace = tempReplace.substr(1, tempReplace.size() - 2);
+
+					std::string tempSearch = toFind, tempReplace = toReplace;
 					replacements.push_back(searchReplace(tempSearch, tempReplace));
 
 					if (replacements.size() % 16)
 						replacements.shrink_to_fit();
 
-					(verbose ? printf("Added replacement %d ['%s' ---> '%s']\n", (int)replacements.size(), field.c_str(), replacement.c_str()) : 0);
+					(verbose ? printf("Added replacement %d ['%s' ---> '%s']\n", (int)replacements.size(), toFind.c_str(), toReplace.c_str()) : 0);
 				}
 
 				// Patch UEXP
 				for (auto file : uassetFiles) {
 					bool bHasModified = false;
 					std::filesystem::path outputPath = targetArg + "\\" + GetFilename(file);
-					outputPath.replace_extension(".uexp.modded");
+					outputPath.replace_extension(".uexp");
 
 					std::vector<BYTE> buffer = readFile(file);
 					auto oldSize = buffer.size() - 4;
@@ -205,7 +209,8 @@ int main(int argc, char ** argp)
 									(verbose ? printf("currentSerializedSize = 0x%X\nnewSize = 0x%X\noldSize = 0x%zX\n", currentSerializedSize, serializedSize, oldSize) : 0);
 
 									// Write out UEXP
-									outputPath.replace_extension(".uasset.modded");
+									outputPath = targetArg + "\\" + GetFilename(file);
+									outputPath.replace_extension(".uasset");
 									std::ofstream outFile(outputPath, std::ios::binary);
 									outFile.write(reinterpret_cast<char*>(&uassetBuffer[0]), uassetBuffer.size());
 									printf("Written 0x%X bytes to %ws\n", (int)uassetBuffer.size(), outputPath.c_str());
@@ -296,6 +301,7 @@ int main(int argc, char ** argp)
 					processed++;
 				}
 			}
+			printf("Processed %d files, %d failed.\n", processedEntries, failedEntries);
 		}
 	}
 }
